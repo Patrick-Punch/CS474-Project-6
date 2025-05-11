@@ -7,6 +7,7 @@ Command line:
 * `make` to build. An executable called `testfs` will be produced.
 * `make clean` to remove all object files.
 * `make pristine` to clean everything.
+* `make test` will build everything and run the `./testfs` executable
 
 VS Code:
 
@@ -15,7 +16,9 @@ VS Code:
 ## Files
 
 * `block.c`, `block.h`: Provide block-level read/write access to a virtual disk image.
-* `image.c`, `image.h`: Handle opening, closing, and managing the backing store image file (e.g. `test.img`).
+* `image.c`, `image.h`: Handle opening, closing, and managing the backing store image file.
+* `free.c`, `free.h`: Functions to find and manage free bits in a bitmap for block allocation.
+* `inode.c`, `inode.h`: Structures and operations for managing simple inodes.
 * `ctest.h`: Lightweight testing framework used to write and run unit tests.
 * `testfs.c`: Contains test cases that validate the behavior of the image and block layer.
 * `Makefile`: Build configuration for compiling the project.
@@ -32,6 +35,8 @@ Key data elements:
 * **Image file**: A file on the host system representing the "disk".
 * **Block size**: Fixed-size chunks read and written to/from the image file.
 * **Block index**: Integer offsets used to seek to the correct position in the file.
+* **Bitmap**: A block of bits used to track free or allocated blocks.
+* **Inode**: Basic file metadata structure including file size and block pointers.
 
 ## Functions
 
@@ -45,6 +50,15 @@ Key data elements:
   * Reads a block of data from the disk image into a buffer
 * `block_write(int block_num, const void *buf)`
   * Writes a block of data from a buffer to the disk image
+* `set_free(unsigned char *block, int num, int set)`
+  * Sets or clears a bit in the bitmap block
+* `find_free(unsigned char *block)`
+  * Finds the index of the first unset bit in the bitmap block
+* `find_low_clear_bit(unsigned char x)`
+  * Finds the index of the lowest clear bit in a byte
+* `inode_alloc() (and related inode functions)`
+  * Provides a simple interface for allocating and accessing inode metadata
+
 
 ## Notes
 
